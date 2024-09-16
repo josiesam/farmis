@@ -1,0 +1,41 @@
+services:
+  farmis_server:
+    build:
+      context: .
+      dockerfile: ./docker/farmis_server/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./farmis_server:/app
+    secrets:
+      - farmis-server-secret-key
+      - postgresql-user-password
+    ports:
+      - 8000:8000
+    env_file:
+      - ./env/.env.local
+    depends_on:
+      - farmis_db
+  farmis_db:
+    image: postgres:16-alpine
+    volumes:
+      - farmis_db_data:/var/lib/postgresql/data/
+    secrets:
+      - farmis-db-password
+    env_file:
+      - ./env/.env.local.db
+  farmis_redis:
+    restart: unless-stopped
+    image: redis:7.0.5-alpine 
+    expose:
+        - 6379
+
+volumes:
+  farmis_db_data:
+
+secrets:
+  farmis-db-password:
+    file: docker_compose/farmis_db/secrets/password.txt
+  farmis-server-secret-key:
+    file: docker_compose/farmis_server/secrets/secret_key.txt
+  postgresql-user-password:
+    file: docker_compose/farmis_server/secrets/postgresql_user_password.txt
