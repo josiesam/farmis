@@ -6,7 +6,7 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/farmis/farmis_server
+WorkingDirectory=/home/ubuntu/farmis/farmer_server/farmis_server
 ExecStart=/home/ubuntu/farmis/farmis_server/venv/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
